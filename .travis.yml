@@ -14,7 +14,7 @@ script:
 after_success:
   # Build production images
   - docker build -t aosmerkin/multi-client ./client
-  - docker build -t aosmerkin/multi-ngnix ./ngnix
+  - docker build -t aosmerkin/multi-ngnix ./nginx
   - docker build -t aosmerkin/multi-server ./server
   - docker build -t aosmerkin/multi-worker ./worker
   # Log in to the docker CLI
