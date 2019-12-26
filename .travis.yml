@@ -1,0 +1,27 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install:
+  # Build images to run tests
+  - docker build -t aosmerkin/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  # Run tests
+  - docker run -e CI=true aosmerkin/react-test npm test
+
+after_success:
+  # Build production images
+  - docker build -t aosmerkin/multi-client ./client
+  - docker build -t aosmerkin/multi-ngnix ./ngnix
+  - docker build -t aosmerkin/multi-server ./server
+  - docker build -t aosmerkin/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push images to docker hub
+  - docker push aosmerkin/multi-client
+  - docker push aosmerkin/multi-ngnix
+  - docker push aosmerkin/multi-server
+  - docker push aosmerkin/multi-worker
+
